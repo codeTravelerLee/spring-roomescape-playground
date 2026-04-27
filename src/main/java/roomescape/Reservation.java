@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Reservation {
+
     int id;
     String name;
     LocalDate date;
@@ -30,5 +31,21 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
     }
 }
