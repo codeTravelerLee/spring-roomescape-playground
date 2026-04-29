@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.repository.ReservationRepository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,6 +27,17 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation newReservation) {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        if (newReservation.getDate().isBefore(today)) {
+            throw new IllegalArgumentException("지난 날짜로는 예약할 수 없어요!");
+        }
+
+        if (newReservation.getDate().isEqual(today) && newReservation.getTime().isBefore(now)) {
+            throw new IllegalArgumentException("이미 지난 시간으로는 예약할 수 없어요!");
+        }
+
         boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
                 .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
                         && reservation.getTime().equals(newReservation.getTime())
