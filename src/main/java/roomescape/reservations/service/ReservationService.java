@@ -11,6 +11,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
+    private static final LocalTime OPENING_TIME = LocalTime.of(10, 0);
+    private static final LocalTime CLOSING_TIME = LocalTime.of(22, 0);
+    private static final int MAX_CAPACITY_PER_TIME = 5;
+
     private final ReservationRepository reservationRepository;
     private final AtomicLong idGenerator = new AtomicLong(1);
 
@@ -53,6 +57,9 @@ public class ReservationService {
             throw new IllegalArgumentException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
         }
 
+        validateReservationInBusinessHour(newReservation.getTime());
+        validateCapacityPerTime(newReservation.getDate(), newReservation.getTime());
+
         Reservation reservation = new Reservation(
                 idGenerator.getAndIncrement(),
                 newReservation.getName(),
@@ -65,5 +72,21 @@ public class ReservationService {
 
     public void deleteReservationById(Long id) {
         reservationRepository.deleteReservationById(id);
+    }
+
+    private void validateReservationInBusinessHour(LocalTime reservationTime) {
+        if (reservationTime.isBefore(OPENING_TIME) || reservationTime.isAfter(CLOSING_TIME)) {
+            throw new IllegalArgumentException("영업 시간외에는 예약이 불가능해요!");
+        }
+    }
+
+    private void validateCapacityPerTime(LocalDate date, LocalTime time) {
+        long currentReservationCount = reservationRepository.getAllReservations().stream()
+                .filter(reservation -> reservation.getDate().equals(date) && reservation.getTime().equals(time))
+                .count();
+
+        if (currentReservationCount >= MAX_CAPACITY_PER_TIME) {
+            throw new IllegalArgumentException("선택하신 시간대는 예약이 마감되었어요! 다른 시간대를 찾아봐주세요! (정원: " + MAX_CAPACITY_PER_TIME + "명)");
+        }
     }
 }
