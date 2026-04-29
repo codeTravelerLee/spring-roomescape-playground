@@ -37,26 +37,9 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation newReservation) {
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
 
-        if (newReservation.getDate().isBefore(today)) {
-            throw new IllegalArgumentException("지난 날짜로는 예약할 수 없어요!");
-        }
-
-        if (newReservation.getDate().isEqual(today) && newReservation.getTime().isBefore(now)) {
-            throw new IllegalArgumentException("이미 지난 시간으로는 예약할 수 없어요!");
-        }
-
-        boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
-                .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
-                        && reservation.getTime().equals(newReservation.getTime())
-                        && reservation.getName().equals(newReservation.getName()));
-
-        if (existsBySameUserAtSameTime) {
-            throw new IllegalArgumentException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
-        }
-
+        validateReservationTimeIsNotPast(newReservation.getDate(), newReservation.getTime());
+        validateDuplicateReservation(newReservation);
         validateReservationInBusinessHour(newReservation.getTime());
         validateCapacityPerTime(newReservation.getDate(), newReservation.getTime());
 
@@ -67,6 +50,7 @@ public class ReservationService {
                 newReservation.getTime()
         );
         reservationRepository.createReservation(reservation);
+
         return reservation;
     }
 
@@ -87,6 +71,30 @@ public class ReservationService {
 
         if (currentReservationCount >= MAX_CAPACITY_PER_TIME) {
             throw new IllegalArgumentException("선택하신 시간대는 예약이 마감되었어요! 다른 시간대를 찾아봐주세요! (정원: " + MAX_CAPACITY_PER_TIME + "명)");
+        }
+    }
+
+    private void validateReservationTimeIsNotPast(LocalDate date, LocalTime time) {
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        if (date.isBefore(today)) {
+            throw new IllegalArgumentException("지난 날짜로는 예약할 수 없어요!");
+        }
+
+        if (date.isEqual(today) && time.isBefore(now)) {
+            throw new IllegalArgumentException("이미 지난 시간으로는 예약이 불가능해요!");
+        }
+    }
+
+    private void validateDuplicateReservation(Reservation newReservation) {
+        boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
+                .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
+                        && reservation.getTime().equals(newReservation.getTime())
+                        && reservation.getName().equals(newReservation.getName()));
+
+        if (existsBySameUserAtSameTime) {
+            throw new IllegalArgumentException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
         }
     }
 }
