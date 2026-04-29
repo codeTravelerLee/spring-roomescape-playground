@@ -1,21 +1,20 @@
-package roomescape.controller;
+package roomescape.reservations.controller;
 
 import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.model.Reservation;
-import roomescape.service.ReservationService;
+import roomescape.reservations.model.Reservation;
+import roomescape.reservations.service.ReservationService;
 
 @RestController
 @RequestMapping("/reservations")
-public class RoomEscapeController {
+public class ReservationController {
 
     private final ReservationService reservationService;
 
-    public RoomEscapeController(ReservationService reservationService) {
+    public ReservationController(ReservationService reservationService) {
         this.reservationService = reservationService;
     }
 

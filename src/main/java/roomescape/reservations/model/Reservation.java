@@ -1,4 +1,4 @@
-package roomescape.model;
+package roomescape.reservations.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,28 +24,28 @@ public class Reservation {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public LocalTime getTime() {
-        return time;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 
     public void setTime(LocalTime time) {

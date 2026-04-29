@@ -1,8 +1,8 @@
-package roomescape.service;
+package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.model.Reservation;
-import roomescape.repository.ReservationRepository;
+import roomescape.reservations.model.Reservation;
+import roomescape.reservations.repository.ReservationRepository;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
