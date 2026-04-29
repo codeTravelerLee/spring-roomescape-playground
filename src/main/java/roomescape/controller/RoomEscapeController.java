@@ -24,6 +24,11 @@ public class RoomEscapeController {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
+        return ResponseEntity.ok(reservationService.getReservationById(id));
+    }
+
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
         Reservation newReservation = reservationService.createReservation(request);

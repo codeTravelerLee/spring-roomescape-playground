@@ -20,6 +20,10 @@ public class ReservationService {
         return reservationRepository.getAllReservations();
     }
 
+    public Reservation getReservationById(Long id) {
+        return reservationRepository.getReservationById(id);
+    }
+
     public Reservation createReservation(Reservation newReservation) {
         Reservation reservation = new Reservation(
                 idGenerator.getAndIncrement(),

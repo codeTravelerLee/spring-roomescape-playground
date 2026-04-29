@@ -16,6 +16,13 @@ public class ReservationRepository {
         return new ArrayList<>(reservations);
     }
 
+    public Reservation getReservationById(Long id) {
+        return reservations.stream()
+                .filter(reservation -> reservation.getId().equals(id))
+                .findFirst()
+                .orElse(null);
+    }
+
     public void createReservation(Reservation reservation) {
         reservations.add(reservation);
     }
