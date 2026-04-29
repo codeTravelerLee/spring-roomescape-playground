@@ -1,11 +1,13 @@
 package roomescape.service;
 
+import org.springframework.stereotype.Service;
 import roomescape.model.Reservation;
 import roomescape.repository.ReservationRepository;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final AtomicLong idGenerator = new AtomicLong(1);

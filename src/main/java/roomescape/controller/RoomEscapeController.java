@@ -18,12 +18,12 @@ public class RoomEscapeController {
         this.reservationService = reservationService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<List<Reservation>> getAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
         Reservation newReservation = reservationService.createReservation(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(newReservation);
