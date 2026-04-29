@@ -25,6 +25,15 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation newReservation) {
+        boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
+                .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
+                        && reservation.getTime().equals(newReservation.getTime())
+                        && reservation.getName().equals(newReservation.getName()));
+
+        if (existsBySameUserAtSameTime) {
+            throw new IllegalArgumentException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
+        }
+
         Reservation reservation = new Reservation(
                 idGenerator.getAndIncrement(),
                 newReservation.getName(),
