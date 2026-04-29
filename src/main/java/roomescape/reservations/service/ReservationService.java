@@ -23,7 +23,13 @@ public class ReservationService {
     }
 
     public Reservation getReservationById(Long id) {
-        return reservationRepository.getReservationById(id);
+        Reservation reservation = reservationRepository.getReservationById(id);
+
+        if (reservation == null) {
+            throw new IllegalArgumentException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
+        }
+
+        return reservation;
     }
 
     public Reservation createReservation(Reservation newReservation) {
