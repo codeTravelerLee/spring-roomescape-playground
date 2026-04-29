@@ -1,5 +1,6 @@
 package roomescape.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,8 @@ public class RoomEscapeController {
     @PostMapping
     public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
         Reservation newReservation = reservationService.createReservation(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newReservation);
+        URI location = URI.create("/reservations/" + newReservation.getId());
+        return ResponseEntity.created(location).body(newReservation);
     }
 
     @DeleteMapping("/{id}")
