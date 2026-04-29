@@ -28,10 +28,7 @@ public class ReservationService {
 
     public Reservation getReservationById(Long id) {
         Reservation reservation = reservationRepository.getReservationById(id);
-
-        if (reservation == null) {
-            throw new IllegalArgumentException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
-        }
+        validateReservationExists(reservation);
 
         return reservation;
     }
@@ -95,6 +92,12 @@ public class ReservationService {
 
         if (existsBySameUserAtSameTime) {
             throw new IllegalArgumentException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
+        }
+    }
+
+    private void validateReservationExists(Reservation reservation) {
+        if (reservation == null) {
+            throw new IllegalArgumentException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
         }
     }
 }
