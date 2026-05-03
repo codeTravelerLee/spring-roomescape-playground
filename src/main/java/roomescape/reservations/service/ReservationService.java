@@ -11,8 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
-    private static final LocalTime OPENING_TIME = LocalTime.of(10, 0);
-    private static final LocalTime CLOSING_TIME = LocalTime.of(22, 0);
+
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
     private final ReservationRepository reservationRepository;
@@ -34,10 +33,7 @@ public class ReservationService {
     }
 
     public Reservation createReservation(Reservation newReservation) {
-
-        validateReservationTimeIsNotPast(newReservation.getDate(), newReservation.getTime());
         validateDuplicateReservation(newReservation);
-        validateReservationInBusinessHour(newReservation.getTime());
         validateCapacityPerTime(newReservation.getDate(), newReservation.getTime());
 
         Reservation reservation = new Reservation(
@@ -55,11 +51,6 @@ public class ReservationService {
         reservationRepository.deleteReservationById(id);
     }
 
-    private void validateReservationInBusinessHour(LocalTime reservationTime) {
-        if (reservationTime.isBefore(OPENING_TIME) || reservationTime.isAfter(CLOSING_TIME)) {
-            throw new IllegalArgumentException("영업 시간외에는 예약이 불가능해요!");
-        }
-    }
 
     private void validateCapacityPerTime(LocalDate date, LocalTime time) {
         long currentReservationCount = reservationRepository.getAllReservations().stream()
@@ -71,18 +62,6 @@ public class ReservationService {
         }
     }
 
-    private void validateReservationTimeIsNotPast(LocalDate date, LocalTime time) {
-        LocalDate today = LocalDate.now();
-        LocalTime now = LocalTime.now();
-
-        if (date.isBefore(today)) {
-            throw new IllegalArgumentException("지난 날짜로는 예약할 수 없어요!");
-        }
-
-        if (date.isEqual(today) && time.isBefore(now)) {
-            throw new IllegalArgumentException("이미 지난 시간으로는 예약이 불가능해요!");
-        }
-    }
 
     private void validateDuplicateReservation(Reservation newReservation) {
         boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
