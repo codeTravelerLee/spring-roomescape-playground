@@ -1,6 +1,9 @@
 package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.global.error.DuplicateReservationException;
+import roomescape.global.error.ReservationFullException;
+import roomescape.global.error.ReservationNotFoundException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
@@ -59,17 +62,15 @@ public class ReservationService {
         reservationRepository.deleteReservationById(id);
     }
 
-
     private void validateCapacityPerTime(LocalDate date, LocalTime time) {
         long currentReservationCount = reservationRepository.getAllReservations().stream()
                 .filter(reservation -> reservation.getDate().equals(date) && reservation.getTime().equals(time))
                 .count();
 
         if (currentReservationCount >= MAX_CAPACITY_PER_TIME) {
-            throw new IllegalArgumentException("선택하신 시간대는 예약이 마감되었어요! 다른 시간대를 찾아봐주세요! (정원: " + MAX_CAPACITY_PER_TIME + "명)");
+            throw new ReservationFullException("선택하신 시간대는 예약이 마감되었어요! 다른 시간대를 찾아봐주세요! (정원: " + MAX_CAPACITY_PER_TIME + "명)");
         }
     }
-
 
     private void validateDuplicateReservation(Reservation newReservation) {
         boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
@@ -78,13 +79,13 @@ public class ReservationService {
                         && reservation.getName().equals(newReservation.getName()));
 
         if (existsBySameUserAtSameTime) {
-            throw new IllegalArgumentException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
+            throw new DuplicateReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
         }
     }
 
     private void validateReservationExists(Reservation reservation) {
         if (reservation == null) {
-            throw new IllegalArgumentException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
+            throw new ReservationNotFoundException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
         }
     }
 

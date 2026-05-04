@@ -22,4 +22,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleReservationRequestWithMissingArgumentsException(MethodArgumentNotValidException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(ReservationFullException.class)
+    public ResponseEntity<String> handleReservationFullException(ReservationFullException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateReservationException.class)
+    public ResponseEntity<String> handleDuplicateReservationException(DuplicateReservationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidReservationTimeException.class)
+    public ResponseEntity<String> handleReservationNotInBusinessTimeException(InvalidReservationTimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }

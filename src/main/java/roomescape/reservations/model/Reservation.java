@@ -1,5 +1,7 @@
 package roomescape.reservations.model;
 
+import roomescape.global.error.InvalidReservationTimeException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -67,7 +69,7 @@ public class Reservation {
 
     private void validateReservationInBusinessHour(LocalTime reservationTime) {
         if (reservationTime.isBefore(OPENING_TIME) || reservationTime.isAfter(CLOSING_TIME)) {
-            throw new IllegalArgumentException("영업 시간외에는 예약이 불가능해요!");
+            throw new InvalidReservationTimeException("영업 시간외에는 예약이 불가능해요!");
         }
     }
 
