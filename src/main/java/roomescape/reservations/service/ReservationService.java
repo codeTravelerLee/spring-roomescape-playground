@@ -1,6 +1,7 @@
 package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.repository.ReservationRepository;
 
@@ -21,8 +22,13 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
     }
 
-    public List<Reservation> getAllReservations() {
-        return reservationRepository.getAllReservations();
+    public List<ReservationResponse> getAllReservations() {
+        List<Reservation> reservations = reservationRepository.getAllReservations();
+        List<ReservationResponse> reservationResponses = reservations.stream()
+                .map(this::convertIntoResponseDTO)
+                .toList();
+
+        return reservationResponses;
     }
 
     public Reservation getReservationById(Long id) {
@@ -78,5 +84,9 @@ public class ReservationService {
         if (reservation == null) {
             throw new IllegalArgumentException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
         }
+    }
+
+    private ReservationResponse convertIntoResponseDTO(Reservation reservation) {
+        return new ReservationResponse(reservation.getId(), reservation.getName(), reservation.getDate(), reservation.getTime());
     }
 }

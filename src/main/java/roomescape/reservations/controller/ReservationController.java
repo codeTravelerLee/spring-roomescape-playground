@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.service.ReservationService;
 
@@ -19,7 +20,7 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<ReservationResponse>> getAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
