@@ -1,6 +1,7 @@
 package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
+import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.repository.ReservationRepository;
@@ -38,19 +39,20 @@ public class ReservationService {
         return convertIntoResponseDTO(reservation);
     }
 
-    public Reservation createReservation(Reservation newReservation) {
-        validateDuplicateReservation(newReservation);
-        validateCapacityPerTime(newReservation.getDate(), newReservation.getTime());
-
+    public ReservationResponse createReservation(ReservationRequest newReservation) {
         Reservation reservation = new Reservation(
                 idGenerator.getAndIncrement(),
-                newReservation.getName(),
-                newReservation.getDate(),
-                newReservation.getTime()
+                newReservation.name(),
+                newReservation.date(),
+                newReservation.time()
         );
+
+        validateDuplicateReservation(reservation);
+        validateCapacityPerTime(reservation.getDate(), reservation.getTime());
+
         reservationRepository.createReservation(reservation);
 
-        return reservation;
+        return convertIntoResponseDTO(reservation);
     }
 
     public void deleteReservationById(Long id) {
