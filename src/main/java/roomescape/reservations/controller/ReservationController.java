@@ -3,6 +3,7 @@ package roomescape.reservations.controller;
 import java.net.URI;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservations.dto.request.ReservationRequest;
@@ -31,7 +32,7 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> createReservation(@RequestBody ReservationRequest request) {
+    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest request) {
         ReservationResponse newReservation = reservationService.createReservation(request);
         URI location = URI.create("/reservations/" + newReservation.Id());
         return ResponseEntity.created(location).body(newReservation);
