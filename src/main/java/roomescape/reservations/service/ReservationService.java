@@ -31,11 +31,11 @@ public class ReservationService {
         return reservationResponses;
     }
 
-    public Reservation getReservationById(Long id) {
+    public ReservationResponse getReservationById(Long id) {
         Reservation reservation = reservationRepository.getReservationById(id);
         validateReservationExists(reservation);
 
-        return reservation;
+        return convertIntoResponseDTO(reservation);
     }
 
     public Reservation createReservation(Reservation newReservation) {
