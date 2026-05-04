@@ -11,4 +11,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBadRequest(IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
+
+    @ExceptionHandler(ReservationNotFoundException.class)
+    public ResponseEntity<String> handleReservationNotFoundException(ReservationNotFoundException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
 }
