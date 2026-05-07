@@ -37,7 +37,6 @@ public class ReservationService {
 
     public ReservationResponse getReservationById(Long id) {
         Reservation reservation = reservationRepository.getReservationById(id);
-        validateReservationExists(reservation);
 
         return convertIntoResponseDTO(reservation);
     }
@@ -80,12 +79,6 @@ public class ReservationService {
 
         if (existsBySameUserAtSameTime) {
             throw new DuplicateReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");
-        }
-    }
-
-    private void validateReservationExists(Reservation reservation) {
-        if (reservation == null) {
-            throw new ReservationNotFoundException("해당 id로는 예약건이 존재하지 않아요! 다시 확인해주세요.");
         }
     }
 
