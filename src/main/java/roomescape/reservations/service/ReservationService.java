@@ -1,9 +1,8 @@
 package roomescape.reservations.service;
 
 import org.springframework.stereotype.Service;
-import roomescape.global.error.DuplicateReservationException;
-import roomescape.global.error.ReservationFullException;
-import roomescape.global.error.ReservationNotFoundException;
+import roomescape.reservations.exception.DuplicateReservationException;
+import roomescape.reservations.exception.ReservationFullException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;

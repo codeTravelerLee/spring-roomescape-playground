@@ -1,7 +1,7 @@
 package roomescape.reservations.repository;
 
 import org.springframework.stereotype.Repository;
-import roomescape.global.error.ReservationNotFoundException;
+import roomescape.reservations.exception.ReservationNotFoundException;
 import roomescape.reservations.model.Reservation;
 
 import java.util.ArrayList;

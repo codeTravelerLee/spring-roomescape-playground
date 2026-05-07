@@ -1,6 +1,6 @@
 package roomescape.reservations.model;
 
-import roomescape.global.error.InvalidReservationTimeException;
+import roomescape.reservations.exception.InvalidReservationTimeException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
