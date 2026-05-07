@@ -23,7 +23,6 @@ public class Reservation {
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validateNameNotEmpty(name);
         validateReservationInBusinessHour(time);
         validateReservationTimeIsNotPast(date, time);
 
@@ -47,12 +46,6 @@ public class Reservation {
 
     public LocalTime getTime() {
         return time;
-    }
-
-    private void validateNameNotEmpty(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("이름을 필수로 입력해주셔야 해요!");
-        }
     }
 
     private void validateReservationInBusinessHour(LocalTime reservationTime) {

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
-import roomescape.reservations.model.Reservation;
 import roomescape.reservations.service.ReservationService;
 
 @RestController
