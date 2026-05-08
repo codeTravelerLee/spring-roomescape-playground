@@ -1,7 +1,7 @@
 package roomescape.reservations.repository;
 
 import org.springframework.stereotype.Repository;
-import roomescape.reservations.exception.ReservationNotFoundException;
+import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.model.Reservation;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class ReservationRepository {
         return reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
                 .findFirst()
-                .orElseThrow(ReservationNotFoundException::new);
+                .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
     }
 
     public void createReservation(Reservation reservation) {
@@ -32,7 +32,7 @@ public class ReservationRepository {
         Reservation reservationTobeDeleted = reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
                 .findFirst()
-                .orElseThrow(ReservationNotFoundException::new);
+                .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
 
         reservations.remove(reservationTobeDeleted);
     }
