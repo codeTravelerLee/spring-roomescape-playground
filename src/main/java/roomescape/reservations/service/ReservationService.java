@@ -34,7 +34,8 @@ public class ReservationService {
     }
 
     public ReservationResponse getReservationById(Long id) {
-        Reservation reservation = reservationRepository.getReservationById(id);
+        Reservation reservation = reservationRepository.getReservationById(id)
+                .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
 
         return convertIntoResponseDTO(reservation);
     }

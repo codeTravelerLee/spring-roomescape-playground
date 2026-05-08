@@ -7,6 +7,7 @@ import roomescape.reservations.model.Reservation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
@@ -17,11 +18,10 @@ public class ReservationRepository {
         return new ArrayList<>(reservations);
     }
 
-    public Reservation getReservationById(Long id) {
+    public Optional<Reservation> getReservationById(Long id) {
         return reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
+                .findFirst();
     }
 
     public void createReservation(Reservation reservation) {
