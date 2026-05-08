@@ -10,10 +10,10 @@ public class Reservation {
     private static final LocalTime OPENING_TIME = LocalTime.of(10, 0);
     private static final LocalTime CLOSING_TIME = LocalTime.of(22, 0);
 
-    private final Long id;
-    private final String name;
-    private final LocalDate date;
-    private final LocalTime time;
+    private Long id;
+    private String name;
+    private LocalDate date;
+    private LocalTime time;
 
     protected Reservation() {
         this.id = null;
