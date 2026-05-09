@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("DB없이 ArrayList - 예약 추가 및 삭제 요청이 잘 수행되는지 테스트한다.")
     void testStep3() {
         Map<String, String> params = new HashMap<>();
         params.put("name", "브라운");
@@ -104,6 +106,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("h2 database 연결이 잘 되었는지 테스트한다.")
     void testStep5() {
         try (Connection connection = jdbcTemplate.getDataSource().getConnection()) {
             assertThat(connection).isNotNull();
@@ -115,6 +118,7 @@ public class MissionStepTest {
     }
 
     @Test
+    @DisplayName("jdbc - 예약(일괄, id기반 개별건) 조회 요청이 잘 수행되는지 테스트한다.")
     void testStep6() {
         jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2026-08-05", "15:40");
 
@@ -128,4 +132,33 @@ public class MissionStepTest {
 
         assertThat(reservations.size()).isEqualTo(count);
     }
+
+    @Test
+    @DisplayName("jdbc - 예약 추가 및 삭제 요청이 잘 수행되는지 테스트한다.")
+    void testStep7() {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "브라운");
+        params.put("date", "2026-08-05");
+        params.put("time", "10:00");
+
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/reservations")
+                .then().log().all()
+                .statusCode(201)
+                .header("Location", "/reservations/1");
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(count).isEqualTo(1);
+
+        RestAssured.given().log().all()
+                .when().delete("/reservations/1")
+                .then().log().all()
+                .statusCode(204);
+
+        Integer countAfterDelete = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+        assertThat(countAfterDelete).isEqualTo(0);
+    }
+
 }

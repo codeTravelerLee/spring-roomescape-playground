@@ -17,9 +17,6 @@ public class RoomescapeApplication implements CommandLineRunner {
     }
 
     public void run(String... args) throws Exception {
-        jdbcTemplate.execute("DROP TABLE IF EXISTS reservation");
-        jdbcTemplate.execute("CREATE TABLE reservation(id SERIAL PRIMARY KEY, name VARCHAR(255), date DATE, time TIME)");
-
         System.out.println("JDBC 초기화 완료, h2 db connected...");
     }
 }

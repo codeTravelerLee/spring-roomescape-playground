@@ -6,24 +6,19 @@ import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
 import roomescape.reservations.repository.JdbcReservationRepository;
-import roomescape.reservations.repository.ReservationRepository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReservationService {
 
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
-    private final ReservationRepository reservationRepository;
     private final JdbcReservationRepository jdbcReservationRepository;
-    private final AtomicLong idGenerator = new AtomicLong(1);
 
-    public ReservationService(ReservationRepository reservationRepository, JdbcReservationRepository jdbcReservationRepository) {
-        this.reservationRepository = reservationRepository;
+    public ReservationService(JdbcReservationRepository jdbcReservationRepository) {
         this.jdbcReservationRepository = jdbcReservationRepository;
     }
 
@@ -36,7 +31,7 @@ public class ReservationService {
     }
 
     public ReservationResponse getReservationById(Long id) {
-        Reservation reservation = reservationRepository.getReservationById(id)
+        Reservation reservation = jdbcReservationRepository.getReservationById(id)
                 .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
 
         return convertIntoResponseDTO(reservation);
@@ -44,7 +39,7 @@ public class ReservationService {
 
     public ReservationResponse createReservation(ReservationRequest newReservation) {
         Reservation reservation = new Reservation(
-                idGenerator.getAndIncrement(),
+                null,
                 newReservation.name(),
                 newReservation.date(),
                 newReservation.time()
@@ -53,17 +48,27 @@ public class ReservationService {
         validateDuplicateReservation(reservation);
         validateCapacityPerTime(reservation.getDate(), reservation.getTime());
 
-        reservationRepository.createReservation(reservation);
+        Long createdReservationId = jdbcReservationRepository.createReservation(reservation);
 
-        return convertIntoResponseDTO(reservation);
+        Reservation createdReservation = new Reservation(
+                createdReservationId,
+                reservation.getName(),
+                reservation.getDate(),
+                reservation.getTime()
+        );
+
+        return convertIntoResponseDTO(createdReservation);
     }
 
     public void deleteReservationById(Long id) {
-        reservationRepository.deleteReservationById(id);
+        int changedRowsCount = jdbcReservationRepository.deleteReservationById(id);
+        if (changedRowsCount == 0) {
+            throw new ReservationException("일치하는 예약건이 없어요!");
+        }
     }
 
     private void validateCapacityPerTime(LocalDate date, LocalTime time) {
-        long currentReservationCount = reservationRepository.getAllReservations().stream()
+        long currentReservationCount = jdbcReservationRepository.getAllReservations().stream()
                 .filter(reservation -> reservation.getDate().equals(date) && reservation.getTime().equals(time))
                 .count();
 
@@ -73,7 +78,7 @@ public class ReservationService {
     }
 
     private void validateDuplicateReservation(Reservation newReservation) {
-        boolean existsBySameUserAtSameTime = reservationRepository.getAllReservations().stream()
+        boolean existsBySameUserAtSameTime = jdbcReservationRepository.getAllReservations().stream()
                 .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
                         && reservation.getTime().equals(newReservation.getTime())
                         && reservation.getName().equals(newReservation.getName()));
