@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
+import roomescape.reservations.model.Reservation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -112,4 +114,18 @@ public class MissionStepTest {
         }
     }
 
+    @Test
+    void testStep6() {
+        jdbcTemplate.update("INSERT INTO reservation (name, date, time) VALUES (?, ?, ?)", "브라운", "2026-08-05", "15:40");
+
+        List<Reservation> reservations = RestAssured.given().log().all()
+                .when().get("/reservations")
+                .then().log().all()
+                .statusCode(200).extract()
+                .jsonPath().getList(".", Reservation.class);
+
+        Integer count = jdbcTemplate.queryForObject("SELECT count(1) from reservation", Integer.class);
+
+        assertThat(reservations.size()).isEqualTo(count);
+    }
 }

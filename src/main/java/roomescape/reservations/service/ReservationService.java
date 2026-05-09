@@ -5,6 +5,7 @@ import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.dto.request.ReservationRequest;
 import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.model.Reservation;
+import roomescape.reservations.repository.JdbcReservationRepository;
 import roomescape.reservations.repository.ReservationRepository;
 
 import java.time.LocalDate;
@@ -18,19 +19,20 @@ public class ReservationService {
     private static final int MAX_CAPACITY_PER_TIME = 5;
 
     private final ReservationRepository reservationRepository;
+    private final JdbcReservationRepository jdbcReservationRepository;
     private final AtomicLong idGenerator = new AtomicLong(1);
 
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, JdbcReservationRepository jdbcReservationRepository) {
         this.reservationRepository = reservationRepository;
+        this.jdbcReservationRepository = jdbcReservationRepository;
     }
 
     public List<ReservationResponse> getAllReservations() {
-        List<Reservation> reservations = reservationRepository.getAllReservations();
-        List<ReservationResponse> reservationResponses = reservations.stream()
+        List<Reservation> reservations = jdbcReservationRepository.getAllReservations();
+
+        return reservations.stream()
                 .map(this::convertIntoResponseDTO)
                 .toList();
-
-        return reservationResponses;
     }
 
     public ReservationResponse getReservationById(Long id) {
