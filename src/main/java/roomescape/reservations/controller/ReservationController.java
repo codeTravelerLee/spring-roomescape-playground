@@ -3,9 +3,11 @@ package roomescape.reservations.controller;
 import java.net.URI;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import roomescape.reservations.model.Reservation;
+import roomescape.reservations.dto.request.ReservationRequest;
+import roomescape.reservations.dto.response.ReservationResponse;
 import roomescape.reservations.service.ReservationService;
 
 @RestController
@@ -19,19 +21,19 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<ReservationResponse>> getAllReservations() {
         return ResponseEntity.ok(reservationService.getAllReservations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation> getReservationById(@PathVariable Long id) {
+    public ResponseEntity<ReservationResponse> getReservationById(@PathVariable Long id) {
         return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 
     @PostMapping
-    public ResponseEntity<Reservation> createReservation(@RequestBody Reservation request) {
-        Reservation newReservation = reservationService.createReservation(request);
-        URI location = URI.create("/reservations/" + newReservation.getId());
+    public ResponseEntity<ReservationResponse> createReservation(@Valid @RequestBody ReservationRequest request) {
+        ReservationResponse newReservation = reservationService.createReservation(request);
+        URI location = URI.create("/reservations/" + newReservation.id());
         return ResponseEntity.created(location).body(newReservation);
     }
 

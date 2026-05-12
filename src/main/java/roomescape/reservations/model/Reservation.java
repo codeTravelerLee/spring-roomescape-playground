@@ -1,5 +1,7 @@
 package roomescape.reservations.model;
 
+import roomescape.reservations.exception.ReservationException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -13,11 +15,14 @@ public class Reservation {
     private LocalDate date;
     private LocalTime time;
 
-    public Reservation() {
+    protected Reservation() {
+        this.id = null;
+        this.name = null;
+        this.date = null;
+        this.time = null;
     }
 
     public Reservation(Long id, String name, LocalDate date, LocalTime time) {
-        validateNameNotEmpty(name);
         validateReservationInBusinessHour(time);
         validateReservationTimeIsNotPast(date, time);
 
@@ -31,43 +36,21 @@ public class Reservation {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
-        this.time = time;
-    }
-
-    private void validateNameNotEmpty(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("이름을 필수로 입력해주셔야 해요!");
-        }
-    }
-
     private void validateReservationInBusinessHour(LocalTime reservationTime) {
         if (reservationTime.isBefore(OPENING_TIME) || reservationTime.isAfter(CLOSING_TIME)) {
-            throw new IllegalArgumentException("영업 시간외에는 예약이 불가능해요!");
+            throw new ReservationException("영업 시간외에는 예약이 불가능해요!");
         }
     }
 
