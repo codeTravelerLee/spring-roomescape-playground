@@ -78,10 +78,8 @@ public class ReservationService {
     }
 
     private void validateDuplicateReservation(Reservation newReservation) {
-        boolean existsBySameUserAtSameTime = jdbcReservationRepository.getAllReservations().stream()
-                .anyMatch(reservation -> reservation.getDate().equals(newReservation.getDate())
-                        && reservation.getTime().equals(newReservation.getTime())
-                        && reservation.getName().equals(newReservation.getName()));
+        boolean existsBySameUserAtSameTime = jdbcReservationRepository
+                .existsDuplicateReservationWithSameUser(newReservation.getDate(), newReservation.getTime(), newReservation.getName());
 
         if (existsBySameUserAtSameTime) {
             throw new ReservationException("이미 동일한 시간에 동일한 이름으로 예약건이 있어요!");

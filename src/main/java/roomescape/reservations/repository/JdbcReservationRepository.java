@@ -65,4 +65,10 @@ public class JdbcReservationRepository {
         String query = "DELETE FROM reservation WHERE id=?";
         return jdbcTemplate.update(query, id);
     }
+
+    public boolean existsDuplicateReservationWithSameUser(LocalDate date, LocalTime time, String name) {
+        String query = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? and name =?";
+        int affectedRowsCount = jdbcTemplate.queryForObject(query, Integer.class, date, time, name);
+        return affectedRowsCount > 0;
+    }
 }
