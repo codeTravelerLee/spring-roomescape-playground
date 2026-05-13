@@ -56,6 +56,11 @@ public class JdbcReservationRepository {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    public int getReservationCountInTimeSlot(LocalDate date, LocalTime time) {
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? FOR UPDATE";
+        return jdbcTemplate.queryForObject(sql, Integer.class, date, time);
+    }
+
     public int deleteReservationById(Long id) {
         String query = "DELETE FROM reservation WHERE id=?";
         return jdbcTemplate.update(query, id);
