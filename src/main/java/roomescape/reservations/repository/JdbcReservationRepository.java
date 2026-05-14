@@ -57,7 +57,7 @@ public class JdbcReservationRepository {
     }
 
     public int getReservationCountInTimeSlot(LocalDate date, LocalTime time) {
-        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? FOR UPDATE";
+        String sql = "SELECT COUNT(*) FROM reservation WHERE date = ? AND time = ? FOR UPDATE SKIP LOCKED";
         return jdbcTemplate.queryForObject(sql, Integer.class, date, time);
     }
 
