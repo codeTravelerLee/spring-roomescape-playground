@@ -37,7 +37,8 @@ public class JdbcReservationRepository {
 
     public Optional<Reservation> getReservationById(Long id) {
         String query = "SELECT id, name, date, time FROM reservation WHERE id=?";
-        return jdbcTemplate.query(query, rowMapper, id).stream().findFirst();
+
+        return Optional.ofNullable(jdbcTemplate.queryForObject(query, rowMapper));
     }
 
     public Long createReservation(Reservation reservation) {
