@@ -1,11 +1,13 @@
 package roomescape.reservations.repository;
 
 import org.springframework.stereotype.Repository;
+import roomescape.reservations.exception.ReservationException;
 import roomescape.reservations.model.Reservation;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ReservationRepository {
@@ -16,18 +18,23 @@ public class ReservationRepository {
         return new ArrayList<>(reservations);
     }
 
-    public Reservation getReservationById(Long id) {
+    public Optional<Reservation> getReservationById(Long id) {
         return reservations.stream()
                 .filter(reservation -> reservation.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
-    public void createReservation(Reservation reservation) {
+    public Long createReservation(Reservation reservation) {
         reservations.add(reservation);
+        return reservation.getId();
     }
 
-    public boolean deleteReservationById(Long id) {
-        return reservations.removeIf(reservation -> reservation.getId().equals(id));
+    public void deleteReservationById(Long id) {
+        Reservation reservationTobeDeleted = reservations.stream()
+                .filter(reservation -> reservation.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new ReservationException("일치하는 예약건이 없어요! 다시 확인해주세요!"));
+
+        reservations.remove(reservationTobeDeleted);
     }
 }
